@@ -1,15 +1,24 @@
 import React from 'react'
 import { useState } from 'react'
+import { useEffect } from 'react'
 import './App.scss'
 
 function App() {
-  const [actualNumber, setActualNumber] = useState('') //3896 9999999
-  const [previousNumber, setPreviousNumber] = useState(null)
+  const [actualNumber, setActualNumber] = useState('') 
+  const [previousNumber, setPreviousNumber] = useState('')
   const [longNumber, setLongNumber] = useState(false)
+  const [pressEqual, setPressEqual] = useState(false)
+  const [signChange, setSignChange] = useState(false)
   const [operation, setOperation] = useState('')
 
+  function handleAC() {
+    setActualNumber('')
+    setPreviousNumber('')
+    setLongNumber(false)
+  }
+
   const handleAddNumber = (digit) => {
-    if (actualNumber.length < 7 && longNumber === false) {
+    if (actualNumber.length < 9 && longNumber === false) {
       setActualNumber(actualNumber + digit)
     }
     else {
@@ -18,9 +27,162 @@ function App() {
     }
   }
 
-  const handleAC = () => {
-    setActualNumber('')
-    setLongNumber(false)
+  const handleChangeSign = () => {
+    setSignChange(true)
+    if (actualNumber.length < 9 && longNumber === false) {
+      let doubleNumber = parseFloat(actualNumber)
+      doubleNumber = doubleNumber * (-1)
+      setActualNumber(doubleNumber.toString()) 
+    }
+    else {
+      setLongNumber(true)
+      setActualNumber("ERROR")
+    }
+  }
+
+  const handleSum = () => {
+    if (longNumber === false) {
+      setOperation("+")
+      setPreviousNumber(actualNumber)
+      setActualNumber("")
+    }
+  }
+
+  const handleSubtraction = () => {
+    if (longNumber === false) {
+      setOperation("-")
+      setPreviousNumber(actualNumber)
+      setActualNumber("")
+    }
+  }
+
+  const handleMultiplication = () => {
+    if (longNumber === false) {
+      setOperation("*")
+      setPreviousNumber(actualNumber)
+      setActualNumber("")
+    }
+  }
+
+  const handleDivision = () => {
+    if (longNumber === false) {
+      setOperation("/")
+      setPreviousNumber(actualNumber)
+      setActualNumber("")
+    }
+  }
+
+  const handleMod = () => {
+    if (longNumber === false) {
+      setOperation("%")
+      setPreviousNumber(actualNumber)
+      setActualNumber("")
+    }
+  }
+
+  const handleEqual = () => {
+    setPressEqual(true)
+    if (operation === "+" && longNumber === false) { //operación suma
+      let operator1 = parseFloat(previousNumber)
+      let operator2 = parseFloat(actualNumber)
+      const result = operator1 + operator2
+      if (result.toString().length < 9) {
+        setActualNumber(result.toString())
+      }
+      else {
+        handleAC()
+        setActualNumber("ERROR")
+        setLongNumber(true)
+      }
+    }
+    else if (operation === "-" && longNumber === false) { //operación resta
+      let operator1 = parseFloat(previousNumber)
+      let operator2 = parseFloat(actualNumber)
+      const result = operator1 - operator2
+      if (signChange == false) {
+        if (result.toString().includes("-")) {
+          handleAC()
+          setActualNumber("ERROR")
+          setLongNumber(true)
+        }
+        else {
+          if (result.toString().length < 9) {
+            setActualNumber(result.toString())
+          }
+          else {
+            handleAC()
+            setActualNumber("ERROR")
+            setLongNumber(true)
+          }
+        }
+      }
+      else {
+        if (result.toString().length < 9) {
+          setActualNumber(result.toString())
+        }
+        else {
+          handleAC()
+          setActualNumber("ERROR")
+          setLongNumber(true)
+        }
+      }
+
+    }
+    else if (operation === "*" && longNumber === false) { //operación multiplicación
+      let operator1 = parseFloat(previousNumber)
+      let operator2 = parseFloat(actualNumber)
+      const result = operator1 * operator2
+      if (result.toString().length < 9) {
+        setActualNumber(result.toString())
+      }
+      else {
+        handleAC()
+        setActualNumber("ERROR")
+        setLongNumber(true)
+      }
+    }
+    else if (operation === "/" && longNumber === false) { //operación división
+      if (actualNumber !== "0") {
+        let operator1 = parseFloat(previousNumber)
+        let operator2 = parseFloat(actualNumber)
+        let result = operator1 / operator2
+        const resultString = result.toString()
+
+        if (resultString.includes(".")) {
+          let splitted = resultString .split(".")
+          let decimalLength = 7 - splitted[0].length
+          result = result.toFixed(decimalLength);
+        }
+
+        if (result.toString().length < 9) {
+          setActualNumber(result.toString())
+        }
+        else {
+          handleAC()
+          setActualNumber("ERROR")
+          setLongNumber(true)
+        }
+      }
+      else {
+        handleAC()
+        setActualNumber("ERROR")
+        setLongNumber(true)
+      }
+    }
+    else if (operation === "%" && longNumber === false) { //operación módulo
+      let operator1 = parseFloat(previousNumber)
+      let operator2 = parseFloat(actualNumber)
+      const result = operator1 % operator2
+      if (result.toString().length < 9) {
+        handleAC()
+        setActualNumber(result.toString())
+      }
+      else {
+        handleAC()
+        setActualNumber("ERROR")
+      }
+    }
+    setSignChange(false)
   }
 
   return (
@@ -38,13 +200,13 @@ function App() {
           <button className='gray-button' value="ac" onClick={() => handleAC()}> 
             AC
           </button>
-          <button className='gray-button' value="sign"> 
+          <button className='gray-button' value="changeSign" onClick={() => handleChangeSign()}> 
             +/-
           </button>
-          <button className='gray-button' value="mod"> 
+          <button className='gray-button' value="mod" onClick={() => handleMod()}> 
             %
           </button>
-          <button className='pink-button' value="division"> 
+          <button className='pink-button' value="division" onClick={() => handleDivision()}> 
             ÷
           </button>
 
@@ -57,7 +219,7 @@ function App() {
           <button className='beige-button' value="9" onClick={() => handleAddNumber("9")}> 
             9
           </button>
-          <button className='pink-button' value="multiplication"> 
+          <button className='pink-button' value="multiplication" onClick={() => handleMultiplication()}> 
             ×
           </button>
 
@@ -70,7 +232,7 @@ function App() {
           <button className='beige-button' value="6" onClick={() => handleAddNumber("6")}> 
             6
           </button>
-          <button className='pink-button' value="subtraction"> 
+          <button className='pink-button' value="subtraction" onClick={() => handleSubtraction()}> 
             -
           </button>
 
@@ -83,7 +245,7 @@ function App() {
           <button className='beige-button' value="3" onClick={() => handleAddNumber("3")}> 
             3
           </button>
-          <button className='pink-button' value="addition"> 
+          <button className='pink-button' value="sum" onClick={() => handleSum()}> 
             +
           </button>
 
@@ -93,7 +255,7 @@ function App() {
           <button className='beige-button' value="dot" onClick={() => handleAddNumber(".")}> 
             .
           </button>
-          <button className='pink-button' value="equal"> 
+          <button className='pink-button' value="equal" onClick={() => handleEqual()}> 
             =
           </button>
 
