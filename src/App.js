@@ -27,7 +27,7 @@ function App() {
     setSignChange(true)
     if (actualNumber.length < 9 && longNumber === false) {
       let doubleNumber = parseFloat(actualNumber)
-      doubleNumber *= doubleNumber * (-1)
+      doubleNumber *= (-1)
       setActualNumber(doubleNumber.toString())
     } else {
       setLongNumber(true)
