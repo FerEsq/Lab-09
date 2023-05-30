@@ -44,9 +44,12 @@ body {
     font-size: 50px;
     margin: 0;
     position: absolute;
-    top: 55%;
-    left: 58%;
+    bottom: 0;
+    right: 0;
+    margin-right: 8px;
     letter-spacing: 2px;
+    max-width: 230px;
+    word-wrap: break-word;
   }
 }
 
