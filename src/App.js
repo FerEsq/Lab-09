@@ -11,6 +11,54 @@ function App() {
   const [signChange, setSignChange] = useState(false)
   const [operation, setOperation] = useState('')
 
+  useEffect(() => {
+    if (actualNumber == "NaN") {
+      setActualNumber("ERROR")
+      setLongNumber(true)
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.code === 'Digit0') {
+        handleAddNumber("0")
+      }
+      else if (event.code === 'Digit1') {
+        handleAddNumber("1")
+      }
+      else if (event.code === 'Digit2') {
+        handleAddNumber("2")
+      }
+      else if (event.code === 'Digit3') {
+        handleAddNumber("3")
+      }
+      else if (event.code === 'Digit4') {
+        handleAddNumber("4")
+      }
+      else if (event.code === 'Digit5') {
+        handleAddNumber("5")
+      }
+      else if (event.code === 'Digit6') {
+        handleAddNumber("6")
+      }
+      else if (event.code === 'Digit7') {
+        handleAddNumber("7")
+      }
+      else if (event.code === 'Digit8') {
+        handleAddNumber("8")
+      }
+      else if (event.code === 'Digit9') {
+        handleAddNumber("9")
+      }
+      else if (event.code === 'Period') {
+        handleAddNumber(".")
+      }
+    }
+
+    document.body.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [actualNumber])
+
   function handleAC() {
     setActualNumber('')
     setPreviousNumber('')
